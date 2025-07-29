@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gestión de Tareas del Hogar - PRO</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode: 'class' }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- ENLACE A NUESTRO CSS -->
+  <link rel="stylesheet" href="src/css/style.css">
+</head>
+<body class="bg-slate-100 text-slate-800 transition-colors duration-300 dark:bg-slate-900 dark:text-slate-200">
+
+ <!-- ===== CONTENEDOR DE PANTALLAS ========= -->
+
+  <main id="app-container">
+    <!-- Pantalla de Login -->
+    <div id="loginScreen" class="w-full min-h-screen flex items-center justify-center p-4">
+      <div class="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-2xl w-full max-w-sm border border-slate-200 dark:border-slate-700 animate-fade-in">
+        <h2 class="text-3xl font-bold text-center text-sky-600 dark:text-sky-400 mb-2">Bienvenido</h2>
+        <form id="loginForm" class="space-y-6 mt-6">
+          <input id="username" type="text" placeholder="Usuario" class="w-full px-4 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-sky-500 focus:outline-none transition" required/>
+          <input id="password" type="password" placeholder="Contraseña" class="w-full px-4 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-sky-500 focus:outline-none transition" required/>
+          <button type="submit" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-semibold py-3 px-4 rounded-lg shadow-lg hover:shadow-sky-500/30 transition-all duration-300">Iniciar sesión</button>
+        </form>
+        <div class="text-center text-sm mt-6">
+          <a href="#" onclick="UI.showScreen('forgotPasswordScreen')" class="font-medium text-sky-600 hover:text-sky-500 dark:text-sky-400 dark:hover:text-sky-300">¿Olvidaste tu contraseña?</a>
+          <span class="mx-2 text-slate-400">|</span>
+          <a href="#" onclick="UI.showScreen('registerScreen')" class="font-medium text-sky-600 hover:text-sky-500 dark:text-sky-400 dark:hover:text-sky-300">Regístrate</a>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Pantalla de Registro -->
+    <div id="registerScreen" class="w-full min-h-screen hidden items-center justify-center p-4">
+      <div class="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-2xl w-full max-w-sm border border-slate-200 dark:border-slate-700">
+        <h2 class="text-3xl font-bold text-center text-sky-600 dark:text-sky-400 mb-6">Crear Cuenta</h2>
+        <form id="registerForm" class="space-y-4">
+          <input id="reg-username" type="text" placeholder="Usuario" class="w-full px-4 py-2 bg-slate-100 dark:bg-slate-700 rounded-lg" required/>
+          <input id="reg-password" type="password" placeholder="Contraseña (mínimo 8 caracteres)" class="w-full px-4 py-2 bg-slate-100 dark:bg-slate-700 rounded-lg" required/>
+          <input id="reg-secret-q" type="text" placeholder="Pregunta Secreta (ej: nombre mascota)" class="w-full px-4 py-2 bg-slate-100 dark:bg-slate-700 rounded-lg" required/>
+          <input id="reg-secret-a" type="text" placeholder="Respuesta Secreta" class="w-full px-4 py-2 bg-slate-100 dark:bg-slate-700 rounded-lg" required/>
+          <button type="submit" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-semibold py-3 px-4 rounded-lg shadow-lg mt-2">Registrarse</button>
+          <button type="button" onclick="UI.showScreen('loginScreen')" class="w-full bg-slate-200 hover:bg-slate-300 dark:bg-slate-600 dark:hover:bg-slate-500 text-slate-800 dark:text-slate-200 font-semibold py-2 px-4 rounded-lg">← Volver Atrás</button>
+          <button type="button" onclick="UI.showScreen('loginScreen')" class="w-full mt-2 bg-slate-200 hover:bg-slate-300 dark:bg-slate-600 dark:hover:bg-slate-500 text-slate-800 dark:text-slate-200 font-semibold py-2 px-4 rounded-lg">← Volver al Login</button>
+        </form>
+      </div>
+    </div>
+    
+    <!-- Pantalla Olvido Contraseña -->
+    <div id="forgotPasswordScreen" class="w-full min-h-screen hidden items-center justify-center p-4">
+      <div class="w-full max-w-sm">
+        <div id="forgot-step1" class="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-2xl w-full border border-slate-200 dark:border-slate-700">
+          <h2 class="text-2xl font-bold text-center text-sky-600 dark:text-sky-400 mb-6">Recuperar Acceso</h2>
+          <form id="forgotPasswordForm" class="space-y-4">
+            <input id="forgot-username" type="text" placeholder="Ingresa tu usuario" class="w-full px-4 py-2 bg-slate-100 dark:bg-slate-700 rounded-lg" required/>
+            <button type="submit" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-semibold py-3 px-4 rounded-lg">Buscar</button>
+            <button type="button" onclick="UI.showScreen('loginScreen')" class="w-full mt-2 bg-slate-200 hover:bg-slate-300 dark:bg-slate-600 dark:hover:bg-slate-500 text-slate-800 dark:text-slate-200 font-semibold py-2 px-4 rounded-lg">← Volver al Login</button>
+          </form>
+        </div>
+        <div id="forgot-step2" class="hidden bg-white dark:bg-slate-800 p-8 rounded-xl shadow-2xl w-full border border-slate-200 dark:border-slate-700">
+          <h2 class="text-2xl font-bold text-center text-sky-600 dark:text-sky-400 mb-2">Pregunta Secreta</h2>
+          <p id="secret-question-display" class="text-center text-slate-500 dark:text-slate-400 mb-6"></p>
+          <form id="resetPasswordForm" class="space-y-4">
+            <input id="secret-answer" type="text" placeholder="Tu respuesta secreta" class="w-full px-4 py-2 bg-slate-100 dark:bg-slate-700 rounded-lg" required/>
+            <input id="new-password" type="password" placeholder="Nueva Contraseña" class="w-full px-4 py-2 bg-slate-100 dark:bg-slate-700 rounded-lg" required/>
+            <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-3 px-4 rounded-lg shadow-lg mt-2">Restablecer Contraseña</button>
+            <button type="button" onclick="UI.showScreen('loginScreen')" class="w-full mt-2 bg-slate-200 hover:bg-slate-300 dark:bg-slate-600 dark:hover:bg-slate-500 text-slate-800 dark:text-slate-200 font-semibold py-2 px-4 rounded-lg">← Volver al Login</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Contenedor para Pantalla Principal y Barra Lateral -->
+    <div id="main-app-wrapper" class="relative min-h-screen w-full hidden">
+      <!-- Fondo Oscuro para la Barra Lateral -->
+      <div id="sidebar-backdrop" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden" onclick="UI.closeSidebar()"></div>
+      
+      <!-- Barra Lateral -->
+      <aside id="sidebar" class="fixed top-0 left-0 h-full w-64 bg-white dark:bg-slate-800 shadow-lg z-40 transform -translate-x-full">
+        <div class="p-4 flex justify-between items-center border-b dark:border-slate-700">
+          <h2 class="font-bold text-lg text-sky-600 dark:text-sky-400">Menú</h2>
+          <button onclick="UI.closeSidebar()" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+          </button>
+        </div>
+        <nav class="p-4">
+          <ul class="space-y-2">
+            <li>
+              <button onclick="UI.showModal('dashboardModal')" class="w-full flex items-center gap-3 p-2 rounded-lg text-left hover:bg-slate-100 dark:hover:bg-slate-700">
+                  <svg class="w-6 h-6 text-slate-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" /></svg>
+                  <span>Dashboard</span>
+              </button>
+            </li>
+            <li>
+              <button onclick="UI.showAndGenerateNotifications()" class="w-full flex items-center gap-3 p-2 rounded-lg text-left hover:bg-slate-100 dark:hover:bg-slate-700">
+                  <svg class="w-6 h-6 text-slate-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" /></svg>
+                  <span>Notificaciones</span>
+              </button>
+            </li>
+            <li>
+              <button onclick="UI.showHistoryModal()" class="w-full flex items-center gap-3 p-2 rounded-lg text-left hover:bg-slate-100 dark:hover:bg-slate-700">
+                  <svg class="w-6 h-6 text-slate-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+                  <span>Historial de Actividad</span>
+              </button>
+            </li>
+            <li>
+              <button onclick="UI.showModal('fullManualModal')" class="w-full flex items-center gap-3 p-2 rounded-lg text-left hover:bg-slate-100 dark:hover:bg-slate-700">
+                <svg class="w-6 h-6 text-slate-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6-2.292m0 0V21M12 6.042A8.967 8.967 0 0 1 18 3.75m-6 2.292V3.75m0 14.25V18.292" /></svg>
+                <span>Manual de Usuario</span>
+              </button>
+            </li>
+            <li>
+              <button onclick="UI.showModal('feedbackModal')" class="w-full flex items-center gap-3 p-2 rounded-lg text-left hover:bg-slate-100 dark:hover:bg-slate-700">
+                <svg class="w-6 h-6 text-slate-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.182 15.182a4.5 4.5 0 0 1-6.364 0M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75Zm4.5 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75Z" /></svg>
+                <span>Feedback Rápido</span>
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
+      <!-- Pantalla Principal de Tareas -->
+      <div id="taskScreen" class="flex flex-col items-center py-10 px-4 min-h-screen w-full">
+        <div class="w-full max-w-7xl mx-auto">
+          <!-- Cabecera -->
+          <div class="flex justify-between items-center mb-8 gap-4 flex-wrap">
+            <div class="flex items-center gap-4">
+              <button onclick="UI.openSidebar()" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition" title="Abrir Menú">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+              </button>
+              <div>
+                <h1 class="text-2xl sm:text-4xl font-bold text-slate-900 dark:text-white">Tareas del Hogar</h1>
+                <span id="current-username-display" class="text-sm text-slate-500 dark:text-slate-400"></span>
+              </div>
+            </div>
+            <div class="flex items-center gap-1 sm:gap-2">
+              <button onclick="UI.showLeaderboard()" title="Ver Clasificación" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+                <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9a9 9 0 1 1 9 0Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 0 1 3 3v8.25Zm-3-3h6" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 7.5h.008v.008H12V7.5Z" /></svg>
+              </button>
+              <button onclick="UI.showModal('userManagementModal')" title="Gestionar Usuarios" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg></button>
+              <button onclick="UI.showModal('manualModal')" title="Guía Rápida" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition"><svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" /></svg></button>
+              <button onclick="UI.toggleTheme()" title="Cambiar Tema" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition"><svg id="theme-icon-sun" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg><svg id="theme-icon-moon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg></button>
+              <button onclick="Auth.logout()" title="Cerrar Sesión" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg></button>
+            </div>
+          </div>
+          
+          <!-- Bloque de Búsqueda y Filtro -->
+          <div id="search-filter-container" class="mb-6 bg-white dark:bg-slate-800 p-4 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 flex items-center gap-4 flex-wrap">
+            <div class="relative flex-grow">
+              <input type="search" id="search-input" placeholder="Buscar tarea por texto..." class="w-full pl-10 pr-4 py-2 bg-slate-100 dark:bg-slate-700 rounded-lg focus:ring-2 focus:ring-sky-500 focus:outline-none transition">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg class="w-5 h-5 text-slate-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /></svg>
+              </div>
+            </div>
+            <select id="filter-select" class="bg-slate-100 dark:bg-slate-700 p-2 rounded-lg focus:ring-2 focus:ring-sky-500 focus:outline-none transition">
+              <option value="all">Todos los estados</option>
+              <option value="Pendiente">Pendientes</option>
+              <option value="Completada">Completadas</option>
+            </select>
+          </div>
+
+          <!-- Barra de Progreso -->
+          <div id="task-progress-container" class="mb-6 bg-white dark:bg-slate-800 p-4 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700">
+            <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-200 mb-3">Progreso General</h3>
+            <div id="progress-bar-track" class="w-full h-8 bg-amber-200 dark:bg-amber-800 rounded-full overflow-hidden relative">
+              <div id="progress-bar-completed" class="h-full bg-emerald-500 rounded-full transition-all duration-500 ease-in-out"></div>
+              <div id="progress-bar-text" class="absolute inset-0 flex items-center justify-center text-sm font-bold text-white pointer-events-none"></div>
+            </div>
+          </div>
+          
+          <!-- Tabla de Tareas -->
+           <div class="bg-white dark:bg-slate-800 rounded-xl shadow-lg overflow-hidden border border-slate-200 dark:border-slate-700">
+            <div class="overflow-x-auto">
+              <table class="min-w-full text-sm">
+                <thead class="bg-slate-50 dark:bg-slate-700">
+                  <tr>
+                    <th class="text-left py-3 px-4 font-semibold text-slate-600 dark:text-slate-300 sortable-header" onclick="TaskUI.sort('text')">TAREA <span id="sort-icon-text"></span></th>
+                    <th class="text-left py-3 px-4 font-semibold text-slate-600 dark:text-slate-300">ASIGNADO A</th>
+                    <th class="text-left py-3 px-4 font-semibold text-slate-600 dark:text-slate-300">ESTADO</th>
+                    <th class="text-left py-3 px-4 font-semibold text-slate-600 dark:text-slate-300 sortable-header" onclick="TaskUI.sort('date')">FECHA <span id="sort-icon-date"></span></th>
+                    <th class="text-center py-3 px-4 font-semibold text-slate-600 dark:text-slate-300">ACCIONES</th>
+                  </tr>
+                </thead>
+                <tbody id="tablaTareas" class="divide-y divide-slate-200 dark:divide-slate-700">
+                  <tr id="empty-state-row" class="hidden"><td colspan="5" class="text-center p-16"><svg class="mx-auto h-12 w-12 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M5.636 18.364a9 9 0 010-12.728m12.728 0a9 9 0 010 12.728m-9.9-2.829a5 5 0 010-7.07m7.072 0a5 5 0 010 7.07M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg><h3 class="mt-2 text-sm font-medium text-slate-900 dark:text-white">No hay tareas</h3><p class="mt-1 text-sm text-slate-500 dark:text-slate-400">¡Agrega la primera tarea para empezar!</p></td></tr>
+                  <tr id="new-task-row" class="bg-slate-50 dark:bg-slate-800/50"><td class="p-3"><input id="nuevaTarea" type="text" placeholder="Describe la tarea..." class="w-full bg-transparent focus:bg-white dark:focus:bg-slate-700 px-2 py-1 border border-slate-300 dark:border-slate-600 rounded-md"/></td><td class="p-3"><select id="nuevoUsuario" class="w-full bg-transparent focus:bg-white dark:focus:bg-slate-700 px-2 py-1 border border-slate-300 dark:border-slate-600 rounded-md"></select></td><td class="p-3"><select id="nuevoEstado" class="w-full bg-transparent focus:bg-white dark:focus:bg-slate-700 px-2 py-1 border border-slate-300 dark:border-slate-600 rounded-md"><option>Pendiente</option><option>Completada</option></select></td><td class="p-3"><input id="nuevaFecha" type="date" class="w-full bg-transparent focus:bg-white dark:focus:bg-slate-700 px-2 py-1 border border-slate-300 dark:border-slate-600 rounded-md"/></td><td class="p-3 text-center"><button id="add-task-btn" class="bg-sky-500 hover:bg-sky-600 text-white font-semibold p-2 rounded-full shadow-md"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg></button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="mt-8 flex justify-end gap-4">
+            <button onclick="TaskUI.cargarTareasAutomaticas()" class="flex items-center justify-center gap-2 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-6 rounded-lg shadow-lg hover:shadow-indigo-500/30 transition-all duration-300">
+                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456Z" /></svg>
+                Tareas Automáticas
+            </button>
+            <button onclick="TaskUI.clearAllTasks()" class="flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-6 rounded-lg shadow-lg hover:shadow-red-500/30 transition-all duration-300">
+                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>
+                Limpiar Lista
+            </button>
+          </div>
+          
+          <!-- Zona de Drag & Drop -->
+          <div id="drop-zone" class="fixed bottom-0 left-1/2 -translate-x-1/2 mb-4 p-8 border-4 border-dashed border-slate-300 dark:border-slate-600 rounded-2xl bg-slate-200/80 dark:bg-slate-800/80 backdrop-blur-sm text-center text-slate-500 dark:text-slate-400 opacity-0 pointer-events-none">
+            <svg class="w-12 h-12 mx-auto text-emerald-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+            <p class="mt-2 font-semibold">Suelta aquí para completar la tarea</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <!-- ======================================= -->
+  <!-- ===== MODO CONCENTRACIÓN (NUEVO) ====== -->
+  <!-- ======================================= -->
+  <div id="focusMode" class="hidden fixed inset-0 z-50 flex-col items-center justify-center text-white p-4">
+    <button onclick="UI.hideFocusMode()" class="absolute top-5 right-5 p-2 rounded-full bg-white/20 hover:bg-white/30">
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+    </button>
+    <div class="text-center">
+      <p class="text-lg opacity-80">Concentración en:</p>
+      <h2 id="focus-task-name" class="text-4xl md:text-5xl font-bold mt-2 mb-8" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.2);"></h2>
+      <div id="focus-timer" class="text-7xl md:text-9xl font-bold tracking-tighter" style="text-shadow: 2px 2px 8px rgba(0,0,0,0.3);">25:00</div>
+      <button id="focus-complete-btn" class="mt-12 bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-4 px-10 rounded-full text-xl shadow-lg transition-transform hover:scale-105">
+        ¡Hecho!
+      </button>
+    </div>
+  </div>
+
+  <!-- ======================================= -->
+  <!-- ============ MODALES ================== -->
+  <!-- ======================================= -->
+
+  <!-- Modal Clasificación (Leaderboard) -->
+  <div id="leaderboardModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-2xl w-full max-w-md p-6 animate-fade-in flex flex-col max-h-[90vh]">
+        <div class="flex justify-between items-center mb-4 border-b dark:border-slate-700 pb-4">
+            <h3 class="text-2xl font-bold text-slate-900 dark:text-white">🏆 Clasificación</h3>
+            <button onclick="UI.hideModal('leaderboardModal')" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+        </div>
+        <div id="leaderboard-container" class="flex-grow overflow-y-auto space-y-3"></div>
+    </div>
+  </div>
+
+  <!-- Modal Dashboard de Estadísticas -->
+  <div id="dashboardModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-2xl w-full max-w-4xl p-6 animate-fade-in max-h-[90vh] overflow-y-auto"><div class="flex justify-between items-center mb-6"><h3 class="text-2xl font-bold text-slate-900 dark:text-white">Dashboard</h3><button onclick="UI.hideModal('dashboardModal')" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button></div><div class="grid grid-cols-1 lg:grid-cols-2 gap-8"><div><h4 class="text-lg font-semibold text-center mb-4 text-slate-800 dark:text-slate-200">Distribución de Tareas por Usuario</h4><div class="relative h-64 md:h-80"><canvas id="userTasksChart"></canvas></div></div><div><h4 class="text-lg font-semibold text-center mb-4 text-slate-800 dark:text-slate-200">Resumen de Estados</h4><div class="relative h-64 md:h-80"><canvas id="statusTasksChart"></canvas></div></div></div></div>
+  </div>
+
+  <!-- Modal de Confirmación -->
+  <div id="confirmModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-2xl w-full max-w-md p-6 text-center animate-fade-in"><div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900 mb-4"><svg class="h-6 w-6 text-red-600 dark:text-red-400" stroke="currentColor" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg></div><h3 id="confirmModalTitle" class="text-lg font-medium text-slate-900 dark:text-white mb-2"></h3><p id="confirmModalText" class="text-sm text-slate-500 dark:text-slate-400 mb-6"></p><div class="flex justify-center gap-4"><button onclick="UI.hideModal('confirmModal')" class="py-2 px-6 rounded-lg bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 font-medium">Cancelar</button><button id="confirmBtn" class="py-2 px-6 rounded-lg bg-red-600 hover:bg-red-700 text-white font-medium">Confirmar</button></div></div>
+  </div>
+
+  <!-- Modal Manual de Usuario (Texto Corto) -->
+  <div id="manualModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-2xl w-full max-w-2xl p-6 animate-fade-in max-h-[90vh] overflow-y-auto"><div class="flex justify-between items-center mb-4"><h3 class="text-2xl font-bold text-slate-900 dark:text-white">Guía Rápida</h3><button onclick="UI.hideModal('manualModal')" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button></div><div class="space-y-4 text-slate-600 dark:text-slate-300"><p>¡Bienvenido! Aquí tienes una guía rápida:</p><ul class="list-disc list-inside space-y-2"><li><b>Completar Tareas:</b> Haz clic en el estado de una tarea, o arrástrala a la zona inferior.</li><li><b>Modo Concentración:</b> Pulsa el icono ▶️ en una tarea para iniciar un temporizador y evitar distracciones.</li><li><b>Clasificación (🏆):</b> ¡Gana puntos completando tareas y compite con otros usuarios!</li><li><b>Menú (☰):</b> Encuentra el historial, notificaciones y el manual completo.</li></ul></div></div>
+  </div>
+
+  <!-- Modal Gestión de Usuarios -->
+  <div id="userManagementModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-2xl w-full max-w-lg p-6 animate-fade-in max-h-[90vh] overflow-y-auto"><div class="flex justify-between items-center mb-6"><h3 class="text-2xl font-bold text-slate-900 dark:text-white">Gestionar Usuarios</h3><button onclick="UI.hideModal('userManagementModal')" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button></div><div id="user-list-container" class="space-y-3 mb-6"></div><div class="border-t border-slate-200 dark:border-slate-700 pt-6"><h4 class="text-lg font-semibold mb-3 text-slate-800 dark:text-slate-200">Agregar Nuevo Usuario</h4><form id="addUserForm" class="space-y-3"><input type="text" id="add-user-username" placeholder="Nuevo Usuario" class="w-full bg-slate-100 dark:bg-slate-700 p-2 rounded-md" required><input type="password" id="add-user-password" placeholder="Contraseña" class="w-full bg-slate-100 dark:bg-slate-700 p-2 rounded-md" required><button type="submit" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-semibold py-2 px-4 rounded-lg">Agregar Usuario</button></form></div></div>
+  </div>
+
+  <!-- Modal de Feedback -->
+  <div id="feedbackModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-2xl w-full max-w-md p-6 animate-fade-in text-center">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-2xl font-bold text-slate-900 dark:text-white">Feedback Rápido</h3>
+        <button onclick="UI.hideModal('feedbackModal')" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+      </div>
+      <p class="text-slate-600 dark:text-slate-300 mb-6">¡Cuéntanos qué te parece la aplicación!</p>
+      <div class="flex justify-center gap-4 text-4xl">
+        <button onclick="UI.submitFeedback('mala')" class="transform hover:scale-125 transition-transform duration-200">😞</button>
+        <button onclick="UI.submitFeedback('regular')" class="transform hover:scale-125 transition-transform duration-200">😐</button>
+        <button onclick="UI.submitFeedback('buena')" class="transform hover:scale-125 transition-transform duration-200">😊</button>
+        <button onclick="UI.submitFeedback('excelente')" class="transform hover:scale-125 transition-transform duration-200">😄</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Historial de Actividad -->
+  <div id="historyModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-2xl w-full max-w-2xl p-6 animate-fade-in flex flex-col max-h-[90vh]">
+        <div class="flex justify-between items-center mb-4 border-b dark:border-slate-700 pb-4">
+            <h3 class="text-2xl font-bold text-slate-900 dark:text-white">Historial de Actividad</h3>
+            <button onclick="UI.hideModal('historyModal')" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+        </div>
+        <div id="history-log-container" class="flex-grow overflow-y-auto space-y-3"></div>
+    </div>
+  </div>
+  
+  <!-- Modal de Notificaciones -->
+  <div id="notificationsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-2xl w-full max-w-2xl p-6 animate-fade-in flex flex-col max-h-[90vh]">
+      <div class="flex justify-between items-center mb-4 border-b dark:border-slate-700 pb-4">
+        <h3 class="text-2xl font-bold text-slate-900 dark:text-white">Notificaciones y Recordatorios</h3>
+        <button onclick="UI.hideModal('notificationsModal')" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+      </div>
+      <div class="flex-grow overflow-y-auto space-y-6">
+        <div>
+          <h4 class="text-lg font-semibold text-red-600 dark:text-red-400 mb-2">Tareas Atrasadas</h4>
+          <div id="overdue-tasks-container" class="space-y-2"></div>
+        </div>
+        <div>
+          <h4 class="text-lg font-semibold text-sky-600 dark:text-sky-400 mb-2">Tareas para Hoy</h4>
+          <div id="today-tasks-container" class="space-y-2"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Manual Completo Integrado -->
+  <div id="fullManualModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-2xl w-full max-w-3xl p-6 animate-fade-in flex flex-col max-h-[90vh]">
+        <div class="flex justify-between items-center mb-4 border-b dark:border-slate-700 pb-4">
+            <h3 class="text-2xl font-bold text-slate-900 dark:text-white">Manual de Usuario</h3>
+            <button onclick="UI.hideModal('fullManualModal')" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+        </div>
+        <div class="flex-grow overflow-y-auto space-y-6 text-slate-600 dark:text-slate-300 pr-4">
+          <div class="text-center">
+            <h1 class="text-2xl font-bold">Gestión de Tareas del Hogar - PRO</h1>
+            <p class="text-sm text-slate-500">Versión 1.3 | Fecha: 09 de julio de 2025</p>
+          </div>
+          <hr class="dark:border-slate-700">
+          <div>
+            <h2 class="text-xl font-semibold mb-2 text-slate-800 dark:text-slate-200">1. Introducción</h2>
+            <p>¡Bienvenido a la aplicación <b>Gestión de Tareas del Hogar - PRO</b>! Esta herramienta ha sido diseñada para ayudarte a ti y a tu familia a organizar, asignar y dar seguimiento a todas las tareas domésticas de una manera sencilla, visual e interactiva.</p>
+          </div>
+          <div>
+            <h2 class="text-xl font-semibold mb-2 text-slate-800 dark:text-slate-200">2. Primeros Pasos</h2>
+            <h3 class="text-lg font-semibold mb-2 text-slate-700 dark:text-slate-200">2.1. Registro y Acceso</h3>
+            <ol class="list-decimal list-inside space-y-1">
+              <li>Para usar la app, primero <b>Regístrate</b> con un usuario, contraseña y una pregunta/respuesta secreta.</li>
+              <li>Luego, <b>Inicia Sesión</b> con tus credenciales.</li>
+              <li>Si olvidas tu contraseña, usa la opción <b>"¿Olvidaste tu contraseña?"</b> para recuperarla.</li>
+            </ol>
+          </div>
+          <div>
+            <h2 class="text-xl font-semibold mb-2 text-slate-800 dark:text-slate-200">3. La Interfaz Principal</h2>
+            <ul class="list-disc list-inside space-y-2 mt-2">
+              <li><b>Cabecera y Acciones Rápidas:</b> Accede al menú (☰), Clasificación (🏆), gestión de usuarios (👥), cambio de tema (☀️/🌙) y cierre de sesión.</li>
+              <li><b>Barra de Progreso General:</b> Visualiza el porcentaje total de tareas completadas.</li>
+              <li><b>Tabla de Tareas:</b> El corazón de la aplicación, donde gestionas todo.</li>
+            </ul>
+          </div>
+          <div>
+            <h2 class="text-xl font-semibold mb-2 text-slate-800 dark:text-slate-200">4. Gestión de Tareas</h2>
+            <h3 class="text-lg font-semibold mb-2 text-slate-700 dark:text-slate-200">4.1. Métodos de Interacción</h3>
+            <ul class="list-disc list-inside space-y-2">
+              <li><b>Añadir:</b> Usa la última fila de la tabla para introducir los datos y haz clic en el botón <b>"+"</b>.</li>
+              <li><b>Editar:</b> Haz <b>doble clic</b> en el texto o fecha de una tarea para modificarla.</li>
+              <li><b>Completar (Método 1):</b> Haz <b>un solo clic</b> en el botón de estado ("Pendiente" o "Completada").</li>
+              <li><b>Completar (Método 2):</b> <b>Arrastra</b> una tarea y <b>suéltala</b> en la zona que aparece en la parte inferior.</li>
+              <li><b>Modo Concentración (▶️):</b> Inicia un temporizador para enfocarte en una sola tarea y complétala con una celebración de confeti.</li>
+              <li><b>Eliminar:</b> Haz clic en el icono de la <b>papelera (🗑️)</b>.</li>
+            </ul>
+          </div>
+          <div>
+            <h2 class="text-xl font-semibold mb-2 text-slate-800 dark:text-slate-200">5. Menú Lateral y Funciones Avanzadas</h2>
+            <ul class="list-disc list-inside space-y-2 mt-2">
+              <li><b>Dashboard (📊):</b> Analiza gráficos sobre la distribución y estado de las tareas.</li>
+              <li><b>Notificaciones (🔔):</b> Muestra un resumen de tareas atrasadas y para hoy.</li>
+              <li><b>Historial de Actividad (🕒):</b> Registra todas las acciones importantes (quién, qué y cuándo).</li>
+              <li><b>Manual de Usuario (📖):</b> Abre esta guía detallada.</li>
+            </ul>
+          </div>
+        </div>
+    </div>
+  </div>
+
+  <!-- Notificación Toast -->
+  <div id="toast-notification" class="hidden fixed bottom-5 right-5 z-50">
+    <div id="toast-content" class="flex items-center w-full max-w-xs p-4 text-sm rounded-lg shadow-2xl" role="alert"></div>
+  </div>
+
+  <!-- ENLACE A NUESTRO JAVASCRIPT PRINCIPAL -->
+  <script type="module" src="src/js/main.js"></script>
+
+</body>
+</html>
