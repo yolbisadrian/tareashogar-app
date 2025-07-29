@@ -18,7 +18,10 @@ const pool = new Pool({
   port: parseInt(process.env.DB_PORT || '5432'),
 });
 
-app.use(cors());
+const corsOptions = {
+  origin: 'https://tareashogarapp.netlify.app/' 
+};
+app.use(cors(corsOptions));
 app.use(express.json());
 
 interface AuthRequest extends Request { user?: { id: number; username: string }; }
